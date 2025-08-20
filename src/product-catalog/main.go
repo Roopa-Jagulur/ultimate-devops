@@ -1,3 +1,4 @@
+// RJ
 // product-catalog/main.go
 // This file is part of the OpenTelemetry Demo project 
 // which is licensed under the Apache License 2.0.
