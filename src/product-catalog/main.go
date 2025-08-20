@@ -321,5 +321,4 @@ func createClient(ctx context.Context, svcAddr string) (*grpc.ClientConn, error)
 
 
 
-
-
+// createHealthClient creates a health client for the given service address.
