@@ -1,5 +1,4 @@
 # CI for Product Catalog Service
-
 name: product-catalog-ci
 
 on: 
@@ -86,7 +85,7 @@ jobs:
         - name: checkout code
           uses: actions/checkout@v4
           with:
-            token: ${{ secrets.GITHUB_TOKEN }}
+            token: ${{ secrets.TOKEN_GITHUB }}
 
         - name: Update tag in kubernetes deployment manifest
           run: | 
@@ -94,8 +93,8 @@ jobs:
         
         - name: Commit and push changes
           run: |
-            git config --global user.email "abhishek@gmail.com"
-            git config --global user.name "Abhishek Veeramalla"
+            git config --global user.email "narpala.roopa@gmail.com"
+            git config --global user.name "Roopa-Jagulur"
             git add kubernetes/productcatalog/deploy.yaml
             git commit -m "[CI]: Update product catalog image tag"
             git push origin HEAD:main -f

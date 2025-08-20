@@ -1,3 +1,6 @@
+// product-catalog/main.go
+// This file is part of the OpenTelemetry Demo project 
+// which is licensed under the Apache License 2.0.
 // Copyright The OpenTelemetry Authors
 // SPDX-License-Identifier: Apache-2.0
 package main
@@ -318,5 +321,4 @@ func createClient(ctx context.Context, svcAddr string) (*grpc.ClientConn, error)
 
 
 
-
-
+// createHealthClient creates a health client for the given service address.
