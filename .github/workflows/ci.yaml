@@ -1,17 +1,21 @@
 # CI for Product Catalog Service
 name: product-catalog-ci
 
+# on: says when to trigger this workflow
 on: 
     pull_request_target:
         branches:
         - main
 
-jobs:
+# jobs: include multiple steps in CI, steps take place are build, code-quality, docker and update k8s manifests 
+jobs: 
     build:
-        runs-on: ubuntu-latest
+        # runs-on: we have setup our own runners
+        runs-on: ubuntu-latest 
 
-        steps:
-        - name: checkout code
+        # steps: checkout, install golang, build project and run unit test
+        steps: 
+        - name: checkout code 
           uses: actions/checkout@v4
 
         - name: Setup Go 1.22
@@ -29,7 +33,8 @@ jobs:
           run: |
             cd src/product-catalog
             go test ./...
-    
+
+    # code-quality: checkout code, install golang, run static code analysis
     code-quality:
         runs-on: ubuntu-latest
 
@@ -49,6 +54,7 @@ jobs:
             run: golangci-lint run
             working-directory: src/product-catalog
 
+    # docker: for docker steps - checkout code, install docker/login/docker image push
     docker:
         runs-on: ubuntu-latest
 
@@ -75,7 +81,7 @@ jobs:
             push: true
             tags: ${{ secrets.DOCKER_USERNAME }}/product-catalog:${{github.run_id}}
 
-    
+    # updatek8s: checkout code, update k8s manifest and push changes to trigger CD process
     updatek8s:
         runs-on: ubuntu-latest
 
