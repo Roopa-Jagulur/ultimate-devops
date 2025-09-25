@@ -10,7 +10,7 @@ on:
 # jobs: include multiple steps in CI, steps take place are build, code-quality, docker and update k8s manifests 
 jobs: 
     build:
-        # runs-on: we have setup our own runners
+        # runs-on: we have setup our own runners (self hosted runners)
         runs-on: ubuntu-latest 
 
         # steps: checkout, install golang, build project and run unit test
@@ -76,8 +76,8 @@ jobs:
         - name: Docker Push
           uses: docker/build-push-action@v6
           with:
-            context: src/product-catalog
-            file: src/product-catalog/Dockerfile
+            context: src/product-catalog  #pull image
+            file: src/product-catalog/Dockerfile  #push image
             push: true
             tags: ${{ secrets.DOCKER_USERNAME }}/product-catalog:${{github.run_id}}
 
