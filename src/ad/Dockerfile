@@ -1,4 +1,4 @@
-# base image from dockerhub called as builder here
+ce # base image from dockerhub called as builder here
 FROM eclipse-temurin:21-jdk AS builder
 
 # For docker commands to run
@@ -23,7 +23,7 @@ RUN ./gradlew installDist -PprotoSourceDir=./proto
 
 #####################################################
 # Step 2: building takes place taking binary from Step 1 builder, above.
-# Note: Java binary - is not self contained binaries 
+# Note: Java binary - is not self contained binaries. Hence we need to install or use lightweight jre base image. jre will have only java runtime not JDK.
 FROM eclipse-temurin:21-jre
 
 WORKDIR /usr/src/app/
