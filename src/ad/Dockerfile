@@ -1,4 +1,4 @@
-ce # base image from dockerhub called as builder here
+# base image from dockerhub called as builder here
 FROM eclipse-temurin:21-jdk AS builder
 
 # For docker commands to run
