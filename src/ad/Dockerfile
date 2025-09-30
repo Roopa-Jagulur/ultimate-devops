@@ -23,6 +23,7 @@ RUN ./gradlew installDist -PprotoSourceDir=./proto
 
 #####################################################
 # Step 2: building takes place taking binary from Step 1 builder, above.
+# Note: Java binary - is not self contained binaries 
 FROM eclipse-temurin:21-jre
 
 WORKDIR /usr/src/app/
@@ -32,4 +33,4 @@ COPY --from=builder /usr/src/app/ ./
 ENV AD_PORT 9099
 
 ENTRYPOINT ["./build/install/opentelemetry-demo-ad/bin/Ad"]
-# Java - is not self contained binaries
+
