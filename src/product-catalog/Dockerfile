@@ -42,4 +42,4 @@ ENV PRODUCT_CATALOG_PORT=8088
 # Running product-catalog binary
 ENTRYPOINT [ "./product-catalog" ]
 
-# Note: goland binary is called as self contained - means you can take the go binary or the go executable and run it on the machine, even where go is not installed.
+# Note: goland binary is called as self contained binaries - means you can take the go binary or the go executable and run it on the machine, even where go is not installed.
