@@ -5,7 +5,8 @@ kind: Deployment
 metadata:
   name: opentelemetry-demo-adservice
 
-  # Labels are for identifying resource
+  # Labels are for identifying resource which is used only for identifying project / deployment during our trouble shooting 
+  # again these labels are not used for service discovery part
   labels:
     
     opentelemetry.io/name: opentelemetry-demo-adservice
@@ -25,13 +26,14 @@ spec:
   # Template will define pod related configuration
   template:
     metadata:
-      # this labels is for service discovery
+      # This labels is for service discovery
       labels:
         
         opentelemetry.io/name: opentelemetry-demo-adservice
         app.kubernetes.io/instance: opentelemetry-demo
         app.kubernetes.io/component: adservice
         app.kubernetes.io/name: opentelemetry-demo-adservice
+        
     # This spec is for pod related
     spec:
       serviceAccountName: opentelemetry-demo
@@ -44,6 +46,7 @@ spec:
             
             - containerPort: 8080
               name: service
+          # We collect these environment variables from devolopers below basically used for observabilty demo 
           env:
             - name: OTEL_SERVICE_NAME
               valueFrom:
