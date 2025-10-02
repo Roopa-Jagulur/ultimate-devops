@@ -4,6 +4,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: opentelemetry-demo-adservice
+
+  # Labels are for identifying resource
   labels:
     
     opentelemetry.io/name: opentelemetry-demo-adservice
@@ -12,6 +14,7 @@ metadata:
     app.kubernetes.io/name: opentelemetry-demo-adservice
     app.kubernetes.io/version: "1.12.0"
     app.kubernetes.io/part-of: opentelemetry-demo
+# This spec is for deployment related stuff
 spec:
   replicas: 1
   revisionHistoryLimit: 10
@@ -19,18 +22,22 @@ spec:
     matchLabels:
       
       opentelemetry.io/name: opentelemetry-demo-adservice
+  # Template will define pod related configuration
   template:
     metadata:
+      # this labels is for service discovery
       labels:
         
         opentelemetry.io/name: opentelemetry-demo-adservice
         app.kubernetes.io/instance: opentelemetry-demo
         app.kubernetes.io/component: adservice
         app.kubernetes.io/name: opentelemetry-demo-adservice
+    # This spec is for pod related
     spec:
       serviceAccountName: opentelemetry-demo
       containers:
         - name: adservice
+          # here we provide our docker image created from src/ad/dockerfile
           image: 'ghcr.io/open-telemetry/demo:1.12.0-adservice'
           imagePullPolicy: IfNotPresent
           ports:
