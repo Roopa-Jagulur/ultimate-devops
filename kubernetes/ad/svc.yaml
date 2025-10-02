@@ -2,8 +2,11 @@
 # Source: opentelemetry-demo/templates/component.yaml
 apiVersion: v1
 kind: Service
+
+# Metadata for identification of services
 metadata:
   name: opentelemetry-demo-adservice
+  # Labels for troubleshooting and debugging
   labels:
     opentelemetry.io/name: opentelemetry-demo-adservice
     app.kubernetes.io/instance: opentelemetry-demo
@@ -11,11 +14,15 @@ metadata:
     app.kubernetes.io/name: opentelemetry-demo-adservice
     app.kubernetes.io/version: "1.12.0"
     app.kubernetes.io/part-of: opentelemetry-demo
+
+# Spec is a important part of service (cluster IP (internal users), NodePort IP (internal users), Load Balancer (external users)
 spec:
   type: ClusterIP
   ports:
+    # not container port
     - port: 8080
       name: tcp-service
+      # container port
       targetPort: 8080
   selector:
     opentelemetry.io/name: opentelemetry-demo-adservice
