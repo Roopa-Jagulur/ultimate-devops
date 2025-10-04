@@ -6,10 +6,12 @@ metadata:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
 spec:
-  ingressClassName: alb
+  ingressClassName: alb # this ingress file should be read only by the Alb controller.
   rules:
-    - host: example.com
+      # host based routing and update DNS record with name and loadbalancer IP (Ex: Godaddy / Route53)
+    - host: opentelemetry.rjinfo.co.uk
       http:
+        # path based routing
         paths:
           - path: "/"
             pathType: Prefix
