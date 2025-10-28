@@ -1,0 +1,117 @@
+name: recommendation-ci
+
+on:
+  pull_request_target:
+    branches:
+      - main
+
+  push:
+    branches-ignore:
+      - kubernetes/recommendation/deploy.yaml # ignore k8s manifest changes to avoid loop
+
+jobs:
+  test:
+    name: unit testing
+    runs-on: [self-hosted, linux, x64, aws-recommendation-runner]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          cd src/recommendation
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Build #Build step to validate code is building fine
+        run: |
+         cd src/recommendation
+         python setup.py build
+        # Or if using PEP 517 build system:
+        # python -m build
+
+      - name: Run unit tests
+        run: |
+         cd src/recommendation
+         python -m unittest discover -s tests
+
+  code-quality:
+    name: static code analysis
+    runs-on: [self-hosted, linux, x64, aws-recommendation-runner]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.10'
+
+    - name: Run pylint
+      run: |
+        cd src/recommendation
+        pip install pylint
+        pylint **/*.py
+
+  docker:
+    name: docker build and push
+    runs-on: [self-hosted, linux, x64, aws-recommendation-runner]
+
+    needs: [test, code-quality]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Login to Amazon ECR
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build and push Docker image to ECR
+      uses: docker/build-push-action@v6
+      with:
+        context: src/recommendation
+        file: src/recommendation/Dockerfile
+        push: true
+        tags: ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:${{ github.run_id }}
+
+    - name: Scan Docker image with Trivy
+      uses: aquasecurity/trivy-action@v0.17.0
+      with:
+        image-ref: ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:${{ github.run_id }}
+        format: 'table'
+        exit-code: '1'
+        severity: 'CRITICAL,HIGH'
+
+  updatek8s:
+    name: update k8s deployment manifest
+    runs-on: [self-hosted, linux, x64, aws-recommendation-runner]
+
+    needs: docker
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.TOKEN_GITHUB }}
+
+    - name: Update tag in kubernetes deployment manifest
+      run: |
+        sed -i "s|image: .*|image: ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:${{ github.run_id }}|" kubernetes/recommendation/deploy.yaml
+
+    - name: Commit and push changes
+      run: |
+        git config --global user.email "narpala.roopa@gmail.com"
+        git config --global user.name "Roopa-Jagulur"
+        git add kubernetes/recommendation/deploy.yaml
+        git commit -m "[CI]: Update recommendation service image tag"
+        git push origin HEAD:main -f
