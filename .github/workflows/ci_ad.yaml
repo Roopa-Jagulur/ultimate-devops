@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 name: ad-ci
 
 on:
@@ -104,3 +105,6 @@ jobs:
         git add kubernetes/ad/deploy.yaml
         git commit -m "[CI]: Update ad service image tag"
         git push origin HEAD:main -f
+=======
+
+>>>>>>> 1cc4d20b016e2c82493729c6c1575a8fd810e2cb
