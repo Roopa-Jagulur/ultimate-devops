@@ -27,15 +27,15 @@ jobs:
           with:
             go-version: 1.22
         
-        - name: Build #Build step here to validate code is building fine
+        - name: Build #Build step here to validate code is building fine. Build the golang project which creates an executable named product-catalog-service
           run: |
             cd src/product-catalog
             go mod download
-            go build -o product-catalog-service main.go
+            go build -o product-catalog-service main.go  
 
         - name: unit tests #run unit tests 
           run: |
-            cd src/product-catalog
+            cd src/product-catalog 
             go test ./...
 
     # code-quality: checkout code, install golang, run static code analysis
